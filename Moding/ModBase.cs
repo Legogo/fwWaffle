@@ -8,22 +8,12 @@ using UnityEngine;
 
 public class ModBase : EngineObject {
     
-  protected Plane[] planes;
   protected float waitTimeBeforeRestart = 0f;
-
-  UiScreenReady ui_rdy;
 
   protected override void build()
   {
     base.build();
     _manager = this;
-  }
-  
-  public override void loadingDoneLate()
-  {
-    base.loadingDoneLate();
-
-    ui_rdy = GameObject.FindObjectOfType<UiScreenReady>();
   }
 
   protected override void updateEngine()
@@ -46,15 +36,18 @@ public class ModBase : EngineObject {
     
   }
 
-  virtual protected void updateModRestart(){
-    if (ui_rdy != null)
-    {
-      if (ui_rdy.isLocking()) return;
-    }
+  protected void updateModRestart(){
+    
+    if (lockUpdateModRestart()) return;
 
     Debug.Log("ModBase | <color=cyan>everybody ready</color>");
 
     modLaunch();
+  }
+
+  virtual protected bool lockUpdateModRestart() {
+    
+    return false;
   }
 
   virtual protected void updateModEnd(){
@@ -76,18 +69,6 @@ public class ModBase : EngineObject {
   virtual public void modRestart()
   {
     RoundState._instance.roundRestart();
-
-    //clear bullets from previous round
-    AmmunitionManager.startRound();
-
-    //spawn planes on screen
-    respawnPlanes();
-
-    if (ui_rdy != null)
-    {
-      Debug.Log("ModBase | opening ready menu");
-      ui_rdy.open();
-    }
   }
 
   virtual public void modLaunch(){
@@ -104,63 +85,9 @@ public class ModBase : EngineObject {
   }
 
   virtual public bool isModDone(){
-    
-    respawnDeadPlanes();
-
     return false;
   }
 
-  protected void respawnDeadPlanes()
-  {
-    planes = PlaneManager.get().getAllPlanes();
-
-    for (int i = 0; i < planes.Length; i++)
-    {
-      if (planes[i] == null) continue;
-
-      if (planes[i].modSymbol != null && !planes[i].modSymbol.isVisible())
-      {
-        if (planes[i].modExplosion != null && planes[i].modExplosion.explosionIsDone())
-        {
-          planes[i].spawn(); // will launch
-        }
-      }
-    }
-  }
-
-  virtual protected void respawnPlanes()
-  {
-
-    planes = PlaneManager.get().getControlledPlanes();
-    if (planes == null) Debug.LogWarning("no players ?");
-
-    ArenaManager am = ArenaManager.get();
-    Transform tr = null;
-
-    for (int i = 0; i < planes.Length; i++)
-    {
-      if (planes[i] == null) continue;
-
-      if (am != null)
-      {
-        tr = am.getPlayerSpawn((int)planes[i].getPad().gamePadIndex);
-      }
-
-      if (tr != null) planes[i].spawn(tr.position);
-      else planes[i].spawn();
-    }
-
-  }
-
-  protected void launchPlanes()
-  {
-    planes = PlaneManager.get().getControlledPlanes();
-    for (int i = 0; i < planes.Length; i++)
-    {
-      planes[i].launch();
-    }
-  }
-  
   public bool isRestarting(){
     return RoundState._instance.getState() <= RoundState.eRoundStates.RESTART;
   }
