@@ -17,13 +17,6 @@ static public class SceneTools {
     if (isSceneOfType("test-")) return true;
     return false;
   }
-
-  static public bool isFreeplay()
-  {
-    if (PadManager.get().countConnected() <= 1f) return true;
-
-    return SceneManager.GetActiveScene().name.Contains("free");
-  }
   
   static public string getLevelName() { return SceneManager.GetActiveScene().name; }
   static public bool isSceneOfType(string nm) { return getLevelName().StartsWith(nm); }
