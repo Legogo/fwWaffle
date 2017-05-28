@@ -19,16 +19,11 @@ abstract public class CameraDynamicZoom : RoundObject
   public Vector2 diff; // vec WxH
 
   public IGameplayEntity[] targets;
-
-  protected PlaneManager _pManager;
-
+  
   public override void loadingDone()
   {
     base.loadingDone();
-
-    _pManager = PlaneManager.get();
-    if (_pManager == null) Debug.LogWarning("no plane manager ?");
-
+    
     cam = gameObject.GetComponent<Camera>();
     
     if (cam == null) Debug.LogError("no cam");
