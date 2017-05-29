@@ -7,7 +7,7 @@ public class UiScreen : EngineObject {
 
   Camera uiCamera;
   Canvas canvas;
-
+  
   protected bool lockGameState = false;
   
   public override void loadingDone()

@@ -104,16 +104,17 @@ public class ModBase : EngineObject {
   }
 
   static protected ModBase _manager;
-  static public ModBase getMod()
+  static public ModBase getMod() { return _manager; }
+  static public T getMod<T>() where T : ModBase
   {
     if (_manager == null)
     {
-      _manager = GameObject.FindObjectOfType<ModBase>();
+      _manager = GameObject.FindObjectOfType<T>();
       //if (_manager != null) Debug.Log("<color=yellow>ref game mod is " + _manager.GetType() + "</color>");
       //else Debug.LogWarning("no mods");
     }
 
-    return _manager;
+    return (T)_manager;
   }
 
 }

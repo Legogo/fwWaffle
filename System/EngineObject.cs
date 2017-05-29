@@ -22,7 +22,7 @@ abstract public class EngineObject : MonoBehaviour {
     //on doit attendre que les assets soient chargé avant de balancer les updates (system loading)
     enabled = false;
 
-    if (!EngineLoader.isLoading()){
+    if (!SceneFactory.isLoading()){
       loadingDone();
       loadingDoneLate();
     }

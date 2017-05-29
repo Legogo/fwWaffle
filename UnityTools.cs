@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class UnityTools {
 
-  static public T getManager<T>(string nm) where T : MonoBehaviour{
+  static public T getManager<T>(string nm, bool dontDestroy = false) where T : MonoBehaviour{
     GameObject obj = GameObject.Find(nm);
     T tmp = null;
     if (obj != null){
@@ -20,6 +20,8 @@ public class UnityTools {
       tmp = obj.GetComponent<T>();
     }
     else tmp = obj.AddComponent<T>();
+
+    if (dontDestroy) GameObject.DontDestroyOnLoad(tmp);
 
     return tmp;
   }

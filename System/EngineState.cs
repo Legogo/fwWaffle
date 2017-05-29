@@ -7,7 +7,7 @@ public class EngineState : EngineObject {
   [RuntimeInitializeOnLoadMethod]
   static protected void create()
   {
-    DontDestroyOnLoad(new GameObject("[engine]").AddComponent<EngineState>());
+    _instance = UnityTools.getManager<EngineState>("[engine]", true);
   }
 
   static public EngineState _instance;
