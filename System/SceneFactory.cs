@@ -20,7 +20,7 @@ public class SceneFactory : MonoBehaviour {
     
     _load = true;
 
-    Debug.Log("{SceneFactory} now removing guides ...");
+    Debug.Log("SceneFactory | now removing guides ...");
 
     SceneTools.removeGuides();
     //Debug.Log("factory is done");

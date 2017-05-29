@@ -15,7 +15,7 @@ public class EngineLoader : MonoBehaviour {
 
   [RuntimeInitializeOnLoadMethod]
   static protected void create() {
-    Debug.Log("<color=gray>Engine entry point</color>");
+    Debug.Log("<color=orange>Engine entry point</color>");
     
     new GameObject("[loader]").AddComponent<EngineLoader>();
   }

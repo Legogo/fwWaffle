@@ -11,5 +11,9 @@ public interface IGameplayEntity{
     get;
   }
 
+  Transform transform {
+    get;
+  }
+
   bool isCameraTarget();
 }

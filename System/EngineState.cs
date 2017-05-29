@@ -48,11 +48,12 @@ public class EngineState : EngineObject {
   
   public eGameStates getState() { return _state; }
 
+  /* default is staring mod */
   public void endOfLoading(){
     ModBase mod = ModBase.getMod();
     if (mod == null)
     {
-      Debug.LogWarning("no mod to launch");
+      Debug.LogWarning("EngineState | no mod to launch");
       return;
     }
     mod.modRestart();

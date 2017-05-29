@@ -44,6 +44,7 @@ abstract public class RoundObject : EngineObject {
     enabled = true;
   }
 
+  /* quand on cycle après un round end, mais avant le lancement du round (ex : menu ready) */
   virtual protected void roundRestart(){
     //Debug.Log(GetType() + " roundRestart");
   }

@@ -91,7 +91,7 @@ abstract public class ArenaManager : RoundObject {
     Vector3 position = bnd.randomPositionWithinBounds(depth);
     
     //show for N secondes
-    Debug.DrawLine(Vector3.zero, position, Color.yellow, 2f);
+    //Debug.DrawLine(Vector3.zero, position, Color.yellow, 2f);
 
     return position;
 

@@ -39,27 +39,10 @@ public class UiScreen : EngineObject {
   virtual public bool isLocking(){
     return lockGameState;
   }
-  
-  protected bool someoneHasPad(){ return PadManager.get().countConnected() > 0; }
-  
-  protected bool padSkip()
+
+  virtual protected bool padSkip()
   {
-    //Debug.Log("skip ? "+ PadManager.get().hasSomeConnected());
-
-    if(!PadManager.get().hasSomeConnected()){
-      //Debug.Log("nothing connected");
-      return Input.GetKeyUp(KeyCode.Escape);
-    }
-
-    ControllerPad[] pads = PadManager.pads;
-    
-    for (int i = 0; i < pads.Length; i++)
-    {
-      if(pads[i].pressSkip()) {
-        return true;
-      }
-    }
-
+    if (Input.GetKeyUp(KeyCode.Escape)) return true;
     return false;
   }
 

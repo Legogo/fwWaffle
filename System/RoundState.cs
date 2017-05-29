@@ -23,7 +23,7 @@ public class RoundState : EngineObject {
   
   public void roundRestart()
   {
-    Debug.Log("<color=yellow>round restart</color>");
+    Debug.Log("<color=olive>round restart</color>");
 
     _state = eRoundStates.RESTART;
 
@@ -31,8 +31,8 @@ public class RoundState : EngineObject {
   }
 
   public void roundLaunch(){
-
-    Debug.Log("<color=yellow>round launch</color>");
+    
+    Debug.Log("<color=olive>round launch</color>");
 
     _state = eRoundStates.LIVE;
 
@@ -64,7 +64,7 @@ public class RoundState : EngineObject {
   
   public void roundEnd()
   {
-    Debug.Log("<color=yellow>round end !</color>");
+    Debug.Log("<color=olive>round end !</color>");
 
     _state = eRoundStates.END;
 
@@ -79,7 +79,7 @@ public class RoundState : EngineObject {
 
   public void roundLost()
   {
-    Debug.Log("<color=red>round lose !</color>");
+    Debug.Log("<color=olive>round lose !</color>");
 
     EventRound.onRoundLose();
   }

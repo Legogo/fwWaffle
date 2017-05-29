@@ -32,37 +32,60 @@ abstract public class CameraDynamicZoom : RoundObject
   protected override void roundRestart()
   {
     base.roundRestart();
-
-    targets = getTargets();
+    event_recountTargets();
+  }
+  protected override void roundLaunch()
+  {
+    base.roundLaunch();
+    event_recountTargets();
   }
 
   virtual protected IGameplayEntity[] getTargets() {
     return null;
   }
 
+  public void event_recountTargets() {
+    targets = getTargets();
+
+    //Debug.Log(GetType() + " count " + targets.Length + " targets");
+    //for (int i = 0; i < targets.Length; i++) Debug.Log("  " + targets[i].transform.name, targets[i].transform);
+  }
+
   override protected void updateEngine()
   {
     base.updateEngine();
     
-    ScreenLimits.resize();
+    //solve points at camera corners
+    //ScreenLimits.resize();
 
     if (targets == null) return;
 
+    //for (int i = 0; i < targets.Length; i++) Debug.Log(targets[i].isCameraTarget() + " ? "+targets[i].transform.position);
+
     solve_min_max();
-
+    
     update_middle();
-
-    if (targets.Length <= 0) return;
-
+    
     update_zoom();
   }
   
-  /* récup les points extreme basés sur les avions vivants */
+  int countValidTargets() {
+    int count = 0;
+    for (int i = 0; i < targets.Length; i++)
+    {
+      if (targets[i].isCameraTarget()) count++;
+    }
+    return count;
+  }
+
+  /* récup les points extremes parmis les targets */
   void solve_min_max()
   {
-    //reste en place quand il y a plus personne
-    if (targets.Length <= 0) return;
+    diff.x = diff.y = 0f;
 
+    //reste en place quand il y a plus personne
+    if (countValidTargets() <= 0) return;
+    
     float minX = 100000000f;
     float minY = 100000000f;
     float maxX = -10000000f;
@@ -77,6 +100,7 @@ abstract public class CameraDynamicZoom : RoundObject
       maxX = Mathf.Max(targets[i].position.x, maxX);
       maxY = Mathf.Max(targets[i].position.y, maxY);
     }
+
     min.x = minX;
     min.y = minY;
     max.x = maxX;
@@ -88,7 +112,7 @@ abstract public class CameraDynamicZoom : RoundObject
   void update_middle()
   {
     //solve target
-    midTarget = middle();
+    midTarget = solveMiddle();
 
     //update depth
     mid.z = cam.transform.position.z;
@@ -103,9 +127,14 @@ abstract public class CameraDynamicZoom : RoundObject
           factor = 4f;
         }
       }
+
+      //find next positino
       float dist = Vector3.Distance(cam.transform.position, midTarget);
       float speed = Mathf.Lerp(20f, 40f, Mathf.InverseLerp(0f, 10f, dist));
+      
       mid = Vector3.MoveTowards(mid, midTarget, speed * Time.deltaTime * factor);
+
+      //apply new position
       cam.transform.position = mid;
     }
   }
@@ -122,6 +151,7 @@ abstract public class CameraDynamicZoom : RoundObject
     }
   }
 
+  // zoom level is solved based on distance between all targets
   float solveTargetOrtho()
   {
     // zoom
@@ -153,7 +183,7 @@ abstract public class CameraDynamicZoom : RoundObject
     return result;
   }
 
-  Vector2 middle()
+  Vector2 solveMiddle()
   {
     return min + (diff * 0.5f);
   }
@@ -180,14 +210,19 @@ abstract public class CameraDynamicZoom : RoundObject
     return add;
   }
 
-  void OnDrawGizmos()
+  void OnDrawGizmosSelected()
   {
     Gizmos.color = Color.yellow;
     Gizmos.DrawSphere(mid, 0.1f);
+    Gizmos.DrawLine(cam.transform.position, mid);
 
+    Gizmos.color = Color.grey;
     Gizmos.DrawSphere(min, 0.1f);
+    Gizmos.DrawLine(cam.transform.position, min);
+    
     Gizmos.DrawSphere(max, 0.1f);
-
+    Gizmos.DrawLine(cam.transform.position, max);
+    
     Gizmos.color = Color.red;
     if (targets == null) return;
     if (targets.Length <= 0) return;
