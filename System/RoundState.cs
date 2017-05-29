@@ -7,19 +7,13 @@ public class RoundState : EngineObject {
   [RuntimeInitializeOnLoadMethod]
   static protected void create()
   {
-    DontDestroyOnLoad(new GameObject("[round]").AddComponent<RoundState>());
+    _instance = UnityTools.getManager<RoundState>("[round]", true);
   }
 
   static public RoundState _instance;
   
   public enum eRoundStates { RESTART = 0, LIVE = 1, POST_LIVE = 2, END = 3 };
   protected eRoundStates _state = eRoundStates.RESTART;
-
-  protected override void build()
-  {
-    base.build();
-    _instance = this;
-  }
   
   public void roundRestart()
   {
@@ -37,20 +31,20 @@ public class RoundState : EngineObject {
     _state = eRoundStates.LIVE;
 
     if (EventRound.onRoundLaunch != null) EventRound.onRoundLaunch();
-    
   }
 
   //pas de réaction a la pause
   protected override void subscribeSystemEvent(){}
   
   virtual protected void updateRound(){
-    
   }
 
   protected override void updateEngine()
   {
     base.updateEngine();
-    
+
+    //Debug.Log("update engine | round : "+_state);
+
     //debug key
     if(Input.GetKeyUp(KeyCode.R)) {
       roundRestart();

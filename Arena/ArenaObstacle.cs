@@ -9,9 +9,9 @@ public class ArenaObstacle : ArenaObject {
 
   public BoxCollider2D[] _colliders;
 
-  public override void loadingDone()
+  public override void afterLoading()
   {
-    base.loadingDone();
+    base.afterLoading();
 
     _colliders = transform.Find("collision").GetComponents<BoxCollider2D>();
 	}

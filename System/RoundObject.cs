@@ -8,42 +8,14 @@ abstract public class RoundObject : EngineObject {
 
   protected override void build()
   {
-    base.build();
-
-    //Debug.Log(GetType() + " build()");
-
     EventRound.onRoundRestart += roundRestart;
     EventRound.onRoundLaunch += roundLaunch;
     EventRound.onRoundEnd += roundEnd;
     EventRound.onRoundLose += roundLose;
-  }
 
-  protected override void onStart()
-  {
-    base.onStart();
-
-    StartCoroutine(processWaitFactory());
+    base.build();
   }
   
-  IEnumerator processWaitFactory(){
-
-    yield return null;
-
-    enabled = false;
-
-    _factory = GameObject.FindObjectOfType<SceneFactory>();
-
-    if (_factory != null){
-      while (!_factory.isDoneLoading()) yield return null;
-    }
-
-    onFactoryDone();
-  }
-
-  virtual protected void onFactoryDone(){
-    enabled = true;
-  }
-
   /* quand on cycle après un round end, mais avant le lancement du round (ex : menu ready) */
   virtual protected void roundRestart(){
     //Debug.Log(GetType() + " roundRestart");
@@ -58,7 +30,8 @@ abstract public class RoundObject : EngineObject {
     base.updateEngine();
 
     //Debug.Log("update "+GetType()+" can ? "+canUpdateRound());
-    
+    //Debug.Log(GetType()+" round state ? "+ RoundState._instance.getState());
+
     //lock in menu round update
     if(RoundState._instance.getState() == RoundState.eRoundStates.RESTART){
       updateRoundMenu();

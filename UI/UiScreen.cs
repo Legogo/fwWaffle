@@ -10,9 +10,9 @@ public class UiScreen : EngineObject {
   
   protected bool lockGameState = false;
   
-  public override void loadingDone()
+  public override void afterLoading()
   {
-    base.loadingDone();
+    base.afterLoading();
 
     uiCamera = getUiCamera();
 

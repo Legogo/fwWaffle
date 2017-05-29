@@ -21,9 +21,9 @@ public class EngineState : EngineObject {
     _instance = this;
   }
   
-  public override void loadingDone()
+  public override void afterLoading()
   {
-    base.loadingDone();
+    base.afterLoading();
     _state = eGameStates.LIVE;
   }
 

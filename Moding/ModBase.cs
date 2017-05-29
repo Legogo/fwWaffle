@@ -21,7 +21,7 @@ public class ModBase : EngineObject {
     base.updateEngine();
 
     RoundState.eRoundStates st = RoundState._instance.getState();
-
+    
     if (st == RoundState.eRoundStates.RESTART) updateModRestart();
     else if (st == RoundState.eRoundStates.LIVE) updateModLive();
     else if (st == RoundState.eRoundStates.END) updateModEnd();
@@ -46,7 +46,6 @@ public class ModBase : EngineObject {
   }
 
   virtual protected bool lockUpdateModRestart() {
-    
     return false;
   }
 

@@ -20,9 +20,9 @@ abstract public class CameraDynamicZoom : RoundObject
 
   public IGameplayEntity[] targets;
   
-  public override void loadingDone()
+  public override void afterLoading()
   {
-    base.loadingDone();
+    base.afterLoading();
     
     cam = gameObject.GetComponent<Camera>();
     

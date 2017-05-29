@@ -4,26 +4,22 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System;
 
-public class SceneFactory : MonoBehaviour {
+abstract public class SceneFactory : MonoBehaviour {
 
-  public enum eLoadingStates { BUILD = 0, LOADING = 1, IDLE = 2 };
+  public enum eLoadingStates { BUILD = 0, ASYNC = 1, AFTER = 2, IDLE = 3 };
   static public eLoadingStates _state = eLoadingStates.BUILD;
   
   protected List<AsyncOperation> _asyncs;
 
   protected string[] systemList;
   public string[] scenes;
-  //public GameObject[] prefabs;
-
-  bool _load = false;
 
   void Start() {
-    
     call_loading_system();
   }
 
   void call_loading_system() {
-    _state = eLoadingStates.LOADING;
+    _state = eLoadingStates.ASYNC;
     
     define_scenes_list();
 
@@ -45,14 +41,17 @@ public class SceneFactory : MonoBehaviour {
   void setup() {
     
     EngineObject[] items = GameObject.FindObjectsOfType<EngineObject>();
-    for (int i = 0; i < items.Length; i++)
-    {
-      items[i].loadingDone();
-    }
+
+    //for (int i = 0; i < items.Length; i++) Debug.Log(items[i].name);
+
+    //Debug.Log("SceneFactory | after ...");
+
+    //before the for() loop because some newly created object from afterLoading callback need to call their afterLoading callbacks
+    _state = eLoadingStates.AFTER;
 
     for (int i = 0; i < items.Length; i++)
     {
-      items[i].loadingDoneLate();
+      items[i].afterLoading();
     }
 
     Debug.Log("SceneFactory | now removing guides ...");
@@ -62,6 +61,13 @@ public class SceneFactory : MonoBehaviour {
 
     _state = eLoadingStates.IDLE;
 
+    MonoBehaviour[] comps = gameObject.GetComponents<MonoBehaviour>();
+    if (comps.Length > 1)
+    {
+      Debug.LogError("factory will be destroy, no other component must be on gameobject, " + comps.Length);
+      for (int i = 0; i < comps.Length; i++) Debug.Log(comps[i].GetType());
+    }
+
     GameObject.DestroyImmediate(gameObject);
 	}
 
@@ -70,9 +76,7 @@ public class SceneFactory : MonoBehaviour {
     //Debug.Log(_asyncs.Count + " asyncs loading");
 
     while (_asyncs.Count > 0) yield return null;
-
-    yield return null;
-
+    
     onDone();
   }
 
@@ -92,10 +96,6 @@ public class SceneFactory : MonoBehaviour {
     _asyncs.Remove(async);
 
     //Debug.Log("  package '<b>" + sceneLoad + "</b>' | done loading (" + _asyncs.Count + " left)");
-  }
-
-  public bool isDoneLoading() {
-    return _load;
   }
 
   /* define here contextual scene loading */
