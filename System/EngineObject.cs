@@ -8,17 +8,27 @@ abstract public class EngineObject : MonoBehaviour {
 
   void Awake() {
 
-    //enabled = false empeche l'appel de Update dans Unity
-    //on doit attendre que les assets soient chargé avant de balancer les updates (system loading)
-    enabled = false;
-
     subscribeSystemEvent();
 
     build();
 
+  }
+
+  void Start()
+  {
+    //need to wait a frame for the default factory to be created if not in scene
+
     //Debug.Log(name + " , " + SceneFactory.isLoading());
-    
-    if (SceneFactory._state >= SceneFactory.eLoadingStates.AFTER) afterLoading();
+    if (!SceneFactory.isLoading())
+    {
+      afterLoading();
+    }
+
+
+    //enabled = false empeche l'appel de Update dans Unity
+    //on doit attendre que les assets soient chargé avant de balancer les updates (system loading)
+
+    enabled = false;
   }
 
   virtual protected void build() {}
@@ -41,7 +51,7 @@ abstract public class EngineObject : MonoBehaviour {
     
     updateEngine();
   }
-
+  
   virtual protected void updateSystem() {
     
   }
@@ -57,7 +67,7 @@ abstract public class EngineObject : MonoBehaviour {
   virtual public void afterLoading() {
     enabled = true;
   }
-  
+
   protected string info = "";
   virtual public string toString(){ info = ""; return info; }
 

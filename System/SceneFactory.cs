@@ -6,6 +6,8 @@ using System;
 
 abstract public class SceneFactory : MonoBehaviour {
 
+  static protected SceneFactory _instance;
+
   public enum eLoadingStates { BUILD = 0, ASYNC = 1, AFTER = 2, IDLE = 3 };
   static public eLoadingStates _state = eLoadingStates.BUILD;
   
@@ -13,11 +15,19 @@ abstract public class SceneFactory : MonoBehaviour {
 
   protected string[] systemList;
   public string[] scenes;
+  
+  private void Awake()
+  {
+    _instance = this;
+
+    //default is empty array
+    if (scenes == null) scenes = new string[0];
+  }
 
   void Start() {
     call_loading_system();
   }
-
+  
   void call_loading_system() {
     _state = eLoadingStates.ASYNC;
     
@@ -25,8 +35,8 @@ abstract public class SceneFactory : MonoBehaviour {
 
     List<string> allScenes = new List<string>();
     
-    allScenes.AddRange(systemList);
-    allScenes.AddRange(scenes);
+    if(systemList.Length > 0) allScenes.AddRange(systemList);
+    if(scenes.Length > 0) allScenes.AddRange(scenes);
 
     _asyncs = new List<AsyncOperation>();
 
@@ -53,6 +63,7 @@ abstract public class SceneFactory : MonoBehaviour {
     {
       items[i].afterLoading();
     }
+    
 
     Debug.Log("SceneFactory | now removing guides ...");
     SceneTools.removeGuides();
@@ -101,11 +112,14 @@ abstract public class SceneFactory : MonoBehaviour {
   /* define here contextual scene loading */
   virtual protected void define_scenes_list()
   {
-    string[] list = { "resources-engine" };
-    systemList = list;
+    systemList = new string[] { "resources-engine" };
   }
 
   static public bool isLoading() {
-    return _state < eLoadingStates.IDLE;
+    if (_instance == null) _instance = GameObject.FindObjectOfType<SceneFactory>();
+
+    if (_instance != null) return _state < eLoadingStates.AFTER;
+
+    return false;
   }
 }

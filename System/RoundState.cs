@@ -17,7 +17,7 @@ public class RoundState : EngineObject {
   
   public void roundRestart()
   {
-    Debug.Log("<color=olive>round restart</color>");
+    Debug.Log("<color=lime>round restart</color>");
 
     _state = eRoundStates.RESTART;
 
@@ -26,7 +26,7 @@ public class RoundState : EngineObject {
 
   public void roundLaunch(){
     
-    Debug.Log("<color=olive>round launch</color>");
+    Debug.Log("<color=lime>round launch</color>");
 
     _state = eRoundStates.LIVE;
 
@@ -56,26 +56,34 @@ public class RoundState : EngineObject {
     updateRound();
   }
   
+  /* called by modEnd() */
   public void roundEnd()
   {
-    Debug.Log("<color=olive>round end !</color>");
+    Debug.Log("<color=lime>round end !</color>");
 
     _state = eRoundStates.END;
 
     EventRound.onRoundEnd();
 
+    //in a specific case where you need lost logic (solo play)
     if (hasLost()) roundLost();
+    else if(hasWin()) roundWin();
+
   }
 
-  virtual protected bool hasLost(){
-    return false;
-  }
+  virtual protected bool hasLost(){ return false; }
+  virtual protected bool hasWin() { return false; }
 
   public void roundLost()
   {
-    Debug.Log("<color=olive>round lose !</color>");
+    Debug.Log("<color=lime>round lose !</color>");
 
     EventRound.onRoundLose();
+  }
+
+  public void roundWin()
+  {
+    Debug.Log("<color=lime>round win !</color>");
   }
 
   public eRoundStates getState() { return _state; }

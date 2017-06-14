@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Audio;
 
 public class SoundPlayer : MonoBehaviour {
   
   public AudioClip clip;
+  public AudioMixerGroup mixerChannel;
+
   public Vector2 cooldownRange = new Vector2(0.05f, 0.15f);
   public float volume = 1f;
 
@@ -12,6 +15,8 @@ public class SoundPlayer : MonoBehaviour {
 
   void Awake() {
     src = gameObject.AddComponent<AudioSource>();
+    src.outputAudioMixerGroup = mixerChannel;
+
     cooldown = 0f;
   }
 

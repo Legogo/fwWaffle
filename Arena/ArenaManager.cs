@@ -53,7 +53,9 @@ abstract public class ArenaManager : RoundObject {
     return pos.y > transform.position.y + arenaBounds.bounds.extents.y;
   }
   public bool isUnderground(Vector3 pos) {
-    return pos.y < transform.position.y - arenaBounds.bounds.extents.y;
+    float downPos = (arenaBounds.transform.position + arenaBounds.bounds.center).y - arenaBounds.bounds.extents.y;
+    //Debug.Log(pos.y + " , " + downPos);
+    return pos.y < downPos;
   }
 
   public void checkCollisionWithObstacles() {
